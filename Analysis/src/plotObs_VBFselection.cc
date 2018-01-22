@@ -61,19 +61,21 @@ int main(int argc, char** argv){
         TString filename;
         double weight = 0.;
         int maxEvents;
-        if( skims.sampleName[iSample] == "TTJets" ) maxEvents = min(1000000,numEvents);
-        else maxEvents = min(MAX_EVENTS,numEvents);
+        //if( skims.sampleName[iSample] == "TTJets" ) 
+        //    maxEvents = min(1000000,numEvents);
+        //else 
+        maxEvents = min(MAX_EVENTS,numEvents);
         for( int iEvt = 0 ; iEvt < maxEvents ; iEvt++ ){
             ntuple->GetEntry(iEvt);
             weight = ntuple->PUWeight*ntuple->xsec*ntuple->genHEPMCweight*1000*35.9/skims.originalWeight[iSample];
-            if( skims.sampleName[iSample] == "TTJets" ) weight*=14.;
+            //if( skims.sampleName[iSample] == "TTJets" ) weight*=14.;
             if( iEvt % 1000000 == 0 ) cout << skims.sampleName[iSample] << ": " << iEvt << "/" << numEvents << endl;
             if(! VBFCut(ntuple) ) continue;
             for( int iPlot = 0 ; iPlot < plots.size() ; iPlot++ ){
                 plots[iPlot].fill(ntuple,weight);
             }
-        }
-    }
+        }// end loop over events
+    }// end loop over samples
 
     // Signal samples
     vector<h2l2qTree*> sigSamples;

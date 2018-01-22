@@ -245,25 +245,23 @@ template<typename ntupleType>bool ZHCut(ntupleType* ntuple){
 template<typename ntupleType>bool VBFCut(ntupleType* ntuple){
     if( ntuple->AllLepPt->size() == 0 )
         return false;
-    std::vector<TLorentzVector> dijets = build_dileps<ntupleType>(ntuple);
-    int NMll = dijets.size();
+    //std::vector<TLorentzVector> dileps = build_dileps<ntupleType>(ntuple);
+    //int NMll = dileps.size();
     double max_mll = fill_max_mll(ntuple);
     double btags = fillBJets(ntuple);
-    std::vector<TLorentzVector> dileps = build_dijets<ntupleType>(ntuple);
+    //std::vector<TLorentzVector> dijets = build_dijets<ntupleType>(ntuple);
     double best_mjj = fill_best_mjj(ntuple);
     double best_deta = fill_max_deta(ntuple);
-    int NMjj = dileps.size();
+    //int NMjj = dijets.size();
     double NLeps = ntuple->AllLepPt->size();
     double NJets = ntuple->nCleanedJetsPt30;
-    return NLeps>=2 && 
-        NJets>=4 && 
-        NJets<=6 &&
-        NMll>=1 && 
-        NMjj>=2 && 
-        max_mll > 12 &&
-        max_mll < 60 && 
-        best_mjj > 60 &&
-        best_mjj < 120 &&
-        best_deta > 3. &&
-        btags < 2;    
+    return ( NLeps>=2 && 
+             NJets>=4 && 
+             NJets<=6 &&
+             max_mll > 12 &&
+             max_mll < 60 && 
+             best_mjj > 60 &&
+             best_mjj < 120 &&
+             best_deta > 3. &&
+             btags < 2 );    
 }
