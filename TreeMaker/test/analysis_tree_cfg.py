@@ -38,6 +38,28 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
+process.load("TreeMaker.Utils.metdouble_cfi")
+
+process.ZProducer = cms.EDProducer('ZProducer',
+                                   ElectronTag = cms.InputTag('leptonproducer:IdIsoElectron'),
+                                   MuonTag = cms.InputTag('leptonproducer:IdIsoMuon')
+                                   )
+
+process.JJProducer = cms.EDProducer('JJProducer',
+                                    JetTag = cms.InputTag('slimmedJets'),
+                                    genCollection = cms.InputTag('prunedGenParticles'),
+                                    minPt  = cms.double(30.)
+                                    )
+
+# process.ZZProducer = cms.EDProducer("ZZProducer",
+#                                     Z1Tag = cms.InputTag('JJProducer'),
+#                                     Z2Tag = cms.InputTag('ZProducer')
+#                                      )
+
+process.htdouble = cms.EDProducer('HTDouble',
+                                  JetTag = cms.InputTag('slimmedJets'),
+                                  )
+
 process.genParticleDump = cms.EDProducer('GenParticlesProducer',
                                          genCollection = cms.InputTag('prunedGenParticles'),
                                          debug = cms.bool(True),
@@ -91,6 +113,14 @@ process.TreeMaker.VectorRecoCand.append("slimmedJets")
 #process.TreeMaker.VectorRecoCand.append("slimmedMuons")
 process.TreeMaker.VectorRecoCand.append("slimmedJetsAK8")
 
+process.TreeMaker.VectorRecoCand.append("ZProducer:ZCandidates(Zll)")
+process.TreeMaker.VectorRecoCand.append("JJProducer:ZCandidates(Zjj)")
+process.TreeMaker.VectorDouble.append("JJProducer:dEta(jjDeltaEta)")
+process.TreeMaker.VectorBool.append("JJProducer:matched(Zjj_matched)")
+
+process.TreeMaker.VarsDouble.append("metdouble:Pt(MET)")
+process.TreeMaker.VarsDouble.append("htdouble(HT)")
+
 process.TreeMaker.VectorTLorentzVector.append("genParticleDump(GenParticles)")
 process.TreeMaker.VectorInt.append("genParticleDump:PdgId(GenParticles_PdgId)")
 process.TreeMaker.VectorInt.append("genParticleDump:Status(GenParticles_Status)")
@@ -100,7 +130,12 @@ process.TreeMaker.VectorInt.append("genParticleDump:ParentId(GenParticles_Parent
 process.p = cms.Path(#process.genJetParticles +  
                      #process.ak4GenJets + 
                      process.genParticleDump + 
+                     process.metdouble +
+                     process.htdouble +
                      process.leptonproducer +
+                     process.ZProducer + 
+                     process.JJProducer +
+                     #process.ZZProducer + 
                      process.TreeMaker)
 
 
